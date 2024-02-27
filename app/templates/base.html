@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteraLands - Моя библиотека</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="top">
+    <div class="header center">
+        <div class="header_left">
+            <a href="/" class="header_logo"><img src="/static/image/logo.png"
+                                                 alt="Логотип LiteraLands" class="header_logo">LiteraLands</a>
+        </div>
+        <div class="header_center">
+            <a href="/">Главная</a>
+            <a href="/books">Книги</a>
+            <a href="/recommendations">Рекомендации</a>
+        </div>
+        <div class="user-menu">
+            {% if current_user.is_authenticated %}
+            <div class="dropdown-trigger user-trigger" data-menu="user">
+                {{ current_user.username }}
+                <div class="dropdown-menu user-menu" data-menu="user">
+                    <ul>
+                        <li><a href="{{ url_for('profile') }}">Профиль</a></li>
+                        <li><a href="{{ url_for('my_books') }}">Мои списки</a></li>
+                        <li><a href="{{ url_for('logout') }}">Выход</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="header_right">
+                <a href="/login">Вход</a>
+                <a href="/register">Регистрация</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="dropdown">
+    <div class="genre_search center">
+        <div class="dropdown genre-dropdown">
+            <div class="dropdown_left">
+                <a class="dropdown genre-dropdown btn" type="button" id="genreDropdownButton" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <svg width="26px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 10.4V20M12 10.4C12 8.15979 12 7.03969 11.564 6.18404C11.1805 5.43139 10.5686 4.81947 9.81596 4.43597C8.96031 4 7.84021 4 5.6 4H4.6C4.03995 4 3.75992 4 3.54601 4.10899C3.35785 4.20487 3.20487 4.35785 3.10899 4.54601C3 4.75992 3 5.03995 3 5.6V16.4C3 16.9601 3 17.2401 3.10899 17.454C3.20487 17.6422 3.35785 17.7951 3.54601 17.891C3.75992 18 4.03995 18 4.6 18H7.54668C8.08687 18 8.35696 18 8.61814 18.0466C8.84995 18.0879 9.0761 18.1563 9.29191 18.2506C9.53504 18.3567 9.75977 18.5065 10.2092 18.8062L12 20M12 10.4C12 8.15979 12 7.03969 12.436 6.18404C12.8195 5.43139 13.4314 4.81947 14.184 4.43597C15.0397 4 16.1598 4 18.4 4H19.4C19.9601 4 20.2401 4 20.454 4.10899C20.6422 4.20487 20.7951 4.35785 20.891 4.54601C21 4.75992 21 5.03995 21 5.6V16.4C21 16.9601 21 17.2401 20.891 17.454C20.7951 17.6422 20.6422 17.7951 20.454 17.891C20.2401 18 19.9601 18 19.4 18H16.4533C15.9131 18 15.643 18 15.3819 18.0466C15.15 18.0879 14.9239 18.1563 14.7081 18.2506C14.465 18.3567 14.2402 18.5065 13.7908 18.8062L12 20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="genre-label">Выбрать жанр</span>
+                </a>
+                <div class="dropdown-menu genre-list" aria-labelledby="genreDropdownButton">
+                    {% for main_genre, main_data in genres_data.items() %}
+                    <a class="dropdown-item dropdown-toggle genre-item" href="#" data-genre="{{ main_genre }}">
+                        {{ main_data["name"] }}
+                    </a>
+                    <div class="dropdown-menu sub-menu genre-submenu genre-menu" data-genre="{{ main_genre }}">
+                        <div class="row">
+                            <div class="col">
+                                {% for sub_genre, sub_genre_name in main_data["subgenres"].items() %}
+                                <a class="dropdown-item sub-menu-item"
+                                   href="{{ url_for('books_by_category', category=main_genre, subcategory=sub_genre) }}">
+                                    {{ sub_genre_name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('best_sellers') }}" class="best_seller">Хиты продаж</a>
+            </div>
+            <div class="dropdown_right">
+                <div class="search center">
+                    <form action="/search" method="GET" class="search-form">
+                        <input type="text" name="keyword" placeholder="Найти книгу по автору, названию"
+                               class="search-input">
+                        <button type="submit" class="button search-button">Поиск</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<main class="content content_block center">
+    {% block content %}
+    {% endblock %}
+</main>
+<footer class="footer">
+    <div class="content center">
+        <p>&copy; 2023 LiteraLands - Моя библиотека</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const genreItems = document.querySelectorAll('.genre-item');
+        const genreSubmenus = document.querySelectorAll('.genre-submenu');
+
+        let timeoutId;
+
+        genreItems.forEach(item => {
+            item.addEventListener('mouseenter', function () {
+                const genre = this.getAttribute('data-genre');
+                const submenu = document.querySelector(`.genre-submenu[data-genre="${genre}"]`);
+                clearTimeout(timeoutId);
+                closeAllSubmenus();
+                submenu.classList.add('show');
+            });
+
+            item.addEventListener('mouseleave', function () {
+                const genre = this.getAttribute('data-genre');
+                const submenu = document.querySelector(`.genre-submenu[data-genre="${genre}"]`);
+                timeoutId = setTimeout(() => {
+                    submenu.classList.remove('show');
+                }, 300); 
+            });
+        });
+
+        // Обработчик для подменю
+        genreSubmenus.forEach(submenu => {
+            submenu.addEventListener('mouseenter', function () {
+                clearTimeout(timeoutId);
+            });
+
+            submenu.addEventListener('mouseleave', function () {
+                timeoutId = setTimeout(() => {
+                    this.classList.remove('show');
+                }, 300); // Задержка в миллисекундах перед скрытием подменю
+            });
+        });
+
+        function closeAllSubmenus() {
+            genreSubmenus.forEach(submenu => {
+                submenu.classList.remove('show');
+            });
+        }
+        const userTrigger = document.querySelector('.user-menu .user-trigger');
+        const userMenu = document.querySelector('.user-menu .dropdown-menu');
+
+        userTrigger.addEventListener('mouseover', function () {
+            userMenu.style.display = 'block';
+        });
+
+        userTrigger.addEventListener('mouseout', function () {
+            userMenu.style.display = 'none';
+        });
+
+    });
+</script>
+
+</body>
+</html>

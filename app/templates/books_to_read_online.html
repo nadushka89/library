@@ -1,0 +1,28 @@
+<!--{% extends 'base.html' %}-->
+
+<!--{% block content %}-->
+<!--<div class="content">-->
+<!--    <h2 class="content__block-title">Почитать онлайн</h2>-->
+<!--    <div class="books-list">-->
+<!--        <div class="row">-->
+<!--            {% for book in online_books %}-->
+<!--            <div class="col-md-3 book__category">-->
+<!--                <a href="{{ url_for('book_details', google_id=book.google_id) }}" class="book-link">-->
+<!--                    <div class="book-rating">{{ book.rating }}</div>-->
+<!--                    <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}"-->
+<!--                         alt="Обложка книги: {{ book.title }}" style="max-width: 204px;">-->
+<!--                    <p class="book__title"><strong>{{ book.title[:30] }} {% if book.title|length > 30 %} ... {% endif %}</strong></p>-->
+<!--                    <p class="book__text">{{ book.author[:30] }} {% if book.author|length > 30 %} ... {% endif %}</p>-->
+
+<!--                    {% if book.is_ebook %}-->
+<!--                        <p class="book__status">Доступно онлайн</p>-->
+<!--                    {% else %}-->
+<!--                        <p class="book__status">Не доступно онлайн</p>-->
+<!--                    {% endif %}-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--{% endblock %}-->

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="GET" action="{{ url_for('books_by_category') }}">
+    <select name="category">
+        <option value="">Выберите жанр</option>
+        {% for book_category in book_categories %}
+            {% set categories_list = book_category.split('/') %}
+            {% for sub_category in categories_list %}
+                <option value="{{ sub_category.strip() }}">{{ sub_category.strip() }}</option>
+            {% endfor %}
+        {% endfor %}
+    </select>
+    <input type="submit" value="Поиск">
+</form>
+{% endblock %}
+
+

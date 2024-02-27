@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="search__block__heading center">
+    <h2 class="book__title">Результаты поиска</h2>
+</div>
+
+{% if keyword %}
+<p>Результаты поиска по запросу "{{ keyword }}":</p>
+{% endif %}
+
+<div class="container__block">
+    <form action="/search" method="GET" class="search-form">
+        <input type="text" name="keyword" placeholder="Введите ключевое слово" class="search-input" value="{{ keyword }}">
+        <button type="submit" class="button search-button">Поиск</button>
+    </form>
+</div>
+
+{% if books %}
+<div class="books">
+    {% for book in books %}
+    <div class="col-md-3 book__category">
+        <a href="{{ url_for('book_details', google_id=book.google_id) }}">
+            <div class="book-rating">{{ book.rating }}</div>
+            <img src="{{ book.cover_image if book.cover_image else url_for('static', filename='image/no_cover.jpg') }}" alt="Обложка книги: {{ book.title }}" style="max-width: 204px" />
+            <strong>{{ book.title }}</strong>
+            <p>{{ book.author }}</p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>Извините, по вашему запросу ничего не найдено.</p>
+{% endif %}
+
+{% endblock %}

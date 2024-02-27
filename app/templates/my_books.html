@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="title">Мои книги</h2>
+
+    <div class="book-list__lists">
+        <label for="filter_by_list">Фильтр по списку:</label>
+        <select id="filter_by_list" onchange="location = this.value;">
+            <option value="{{ url_for('my_books') }}">Все книги</option>
+            {% for list in all_lists %}
+                <option value="{{ url_for('my_books', list_id=list.id) }}"
+                        {% if selected_list|int == list.id %}selected{% endif %}>{{ list.name }}
+                </option>
+            {% endfor %}
+            {% if selected_list %}
+                <h3>Выбранный список: {{ (all_lists|selectattr("id", "equalto", selected_list|int)|first).name }}</h3>
+            {% endif %}
+        </select>
+    </div>
+
+    <div class="row books_row">
+        {% for book in books %}
+            <div class="col-md-3 book__category">
+                <a href="{{ url_for('book_details', google_id=book.google_id) }}" class="book-link">
+                    <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}"
+                         alt="Обложка книги: {{ book.title }}" style="max-width: 204px; max-height: 300px;">
+                    <p class="book__title"><strong>{{ book.title }}</strong></p>
+                    <p class="book__text">{{ book.author }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

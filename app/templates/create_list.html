@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="{{ url_for('create_list') }}" method="POST" class="create_list__form center">
+    <label for="create_list">Название списка:</label>
+    <input type="text" name="list_name" id="create_list" required class="create_list-input">
+    <button type="submit" class="button add-button">Создать список</button>
+</form>
+{% endblock %}

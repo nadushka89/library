@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+  <div class="right-content">
+    <div class="details-buttons">
+  {% if is_in_list %}
+  <form action="{{ url_for('remove_from_list', google_id=book.google_id) }}" method="post" id="removeFromFavoritesForm">
+    <button class="button add-button" type="submit">Удалить из списка</button>
+  </form> 
+  {% else %}
+  <form action="{{ url_for('add_to_list', google_id=book.google_id) }}" method="post" id="addToFavoritesForm">
+    <button class="button add-button" type="submit">Добавить в список</button>
+  </form>
+  {% endif %}
+</div>
+    <div class="details">
+      <div class="cover">
+        <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}" alt="Обложка книги: {{ book.title }}" style="max-width: 300px; height: 375px" />
+      </div>
+      <div>
+        <h2 class="title title__left">{{ book.title }}</h2>
+
+        <p class="text">
+          <strong>Авторы:</strong>
+          {% for author in book.author.split(', ') %}
+          <a href="{{ url_for('books_by_author', author=author) }}">{{ author }}</a>{% if not loop.last %}, {% endif %} 
+          {% endfor %}
+        </p>
+        <p class="text"><strong>Описание:</strong> {{ book.description|striptags }}</p>
+        <p class="book-rating-details" id="averageRating"><strong>Рейтинг:</strong> {% if book.rating is not none %}{{ "%.2f"|format(book.rating) }}{% endif %}</p>
+
+        <p class="user-rating"><strong>Ваша оценка:</strong> <span id="userRating">{{ current_user_rating or '' }}</span></p>
+        <p class="text"><strong>Количество страниц:</strong> {{ book.page_count }}</p>
+        <p><strong>Дата публикации книги:</strong> {{ book.published_date }}</p>
+        <p class="text"><strong>Жанр:</strong>
+            {% if book.category %}
+                {% set categories = book.category.split(' / ') %}
+                {% for category in categories %}
+                    {% set category_name = category|replace(',', '')|lower() %}
+                    {% if category_name in genres_data %}
+                        {% set subcategory = selected_subcategory if selected_subcategory in genres_data[category_name]["subgenres"] else "" %}
+                        <a href="{{ url_for('books_by_category', category=category_name, subcategory=subcategory) }}">{{ genres_data[category_name]["name"] }}</a>
+                    {% else %}
+                        <a href="{{ url_for('books_by_category', category=category_name, subcategory=category_name) }}">{{ category }}</a>
+                    {% endif %}
+                    {% if not loop.last %}, {% endif %}
+                {% endfor %}
+            {% elif book.genres %}
+                {% for genre in book.genres %}
+                    {% for category in genre.name.split('/') %}
+                        {% set category_name = category|replace(',', '')|lower() %}
+                        {% if category_name in genres_data %}
+                            {% set subcategory = selected_subcategory if selected_subcategory in genres_data[category_name]["subgenres"] else "" %}
+                            <a href="{{ url_for('books_by_category', category=category_name, subcategory=subcategory) }}">{{ genres_data[category_name]["name"] }}</a>
+                        {% else %}
+                            <a href="{{ url_for('books_by_category', category=category_name, subcategory=category_name) }}">{{ category }}</a>
+                        {% endif %}
+                        {% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                Неизвестен
+            {% endif %}
+        </p>
+        
+        
+      </div>
+    </div>
+    <div class="comments__raiting">
+      <form action="{{ url_for('add_comment', google_id=book.google_id) }}" method="post" class="comment-form">
+        <textarea class="form-control" name="content" required placeholder="Опишите здесь ваши впечатления о книге"></textarea>
+        <button class="button add-button" type="submit">Оставить комментарий</button>
+      </form>
+      <form id="ratingForm" data-url="{{ url_for('rate_book', google_id=book.google_id) }}" method="post">
+        <div class="comments-section">
+          <h4>Комментарии:</h4>
+          {% for comment in comments %}
+          <div class="comment">
+            <strong>{{ comment.user.username }}</strong>
+            <p class="text">{{ comment.content }}</p>
+            <span class="timestamp">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="ratings-section" id="ratingsSection">
+          <h4>Рейтинги:</h4>
+          {% for rating in ratings %}
+          <div class="rating"><strong>{{ rating.user.username }}</strong>: {{ rating.rate }}/5</div>
+          {% endfor %}
+        </div>
+
+        <div class="rating-area">
+          <input type="radio" id="star-5" name="rate" value="5" {% if current_user_rating== 5 %}checked{% endif %}>
+          <label for="star-5" title="Оценка «5»"></label>
+          <input type="radio" id="star-4" name="rate" value="4" {% if current_user_rating== 4 %}checked{% endif %}>
+          <label for="star-4" title="Оценка «4»"></label>
+          <input type="radio" id="star-3" name="rate" value="3" {% if current_user_rating== 3 %}checked{% endif %}>
+          <label for="star-3" title="Оценка «3»"></label>
+          <input type="radio" id="star-2" name="rate" value="2" {% if current_user_rating== 2 %}checked{% endif %}>
+          <label for="star-2" title="Оценка «2»"></label>
+          <input type="radio" id="star-1" name="rate" value="1" {% if current_user_rating== 1 %}checked{% endif %}>
+          <label for="star-1" title="Оценка «1»"></label>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %} 
+          {% if messages %}
+            <ul class="flashes">
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %} 
+        {% endwith %}
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var ratingInputs = document.querySelectorAll('.rating-area input');
+    var currentBookRating = parseFloat(document.querySelector('.book-rating-details').dataset.bookRating);
+    var googleId = document.querySelector('.book-rating-details').dataset.googleId;
+    var userRatingElement = document.getElementById('userRating');
+
+    // Загружаем оценку пользователя из localStorage
+    var votedBefore = localStorage.getItem('voted_for_' + googleId);
+    var selectedRating = null;
+    var ratingInputs = document.querySelectorAll('.rating-area input');
+
+    // Проверяем наличие выбранной оценки и звезд перед использованием
+    window.addEventListener('load', function () {
+      var selectedRating = document.querySelector('.rating-area input:checked');
+      if (votedBefore && selectedRating) {
+        selectedRating.checked = false;
+        localStorage.removeItem('voted_for_' + googleId);
+      }
+    });
+
+    // Переменная для хранения текущей выбранной оценки
+    var currentSelectedRating = null;
+
+    // Проверяем наличие звезд перед использованием
+    if (ratingInputs.length > 0) {
+      ratingInputs.forEach(function (input) {
+        input.addEventListener('change', function () {
+          currentSelectedRating = this;
+          submitRating();
+        });
+      });
+    }
+
+    // Загружаем оценку пользователя при загрузке страницы
+    var userRating = document.querySelector('.user-rating span').innerText.trim();
+    if (userRating !== '') {
+      currentSelectedRating = document.querySelector('.rating-area input[value="' + userRating + '"]');
+      if (currentSelectedRating) {
+        currentSelectedRating.checked = true;
+      }
+    }
+
+    // В функции submitRating использовать currentSelectedRating
+    window.submitRating = function () {
+      var selectedRating = currentSelectedRating;
+      if (!selectedRating) {
+        alert('Выберите рейтинг перед отправкой.');
+        return;
+      }
+
+      var url = document.getElementById('ratingForm').getAttribute('data-url');
+      var data = { rate: selectedRating.value };
+
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Не удалось отправить рейтинг. Сервер вернул ' + response.status);
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          if (data && typeof data.average_rating !== 'undefined' && typeof data.num_ratings !== 'undefined') {
+            updateDisplayedRating(data.average_rating, data.num_ratings, data.current_user_rating);
+            localStorage.setItem('voted_for_' + googleId, selectedRating.value);
+
+            // Обновляем текущую выбранную оценку
+            currentSelectedRating = document.querySelector('.rating-area input:checked');
+          } else {
+            console.error('Неверный формат JSON:', data);
+          }
+        })
+        .catch(function (error) {
+          console.error('Ошибка:', error);
+        });
+    };
+
+    function updateDisplayedRating(averageRating, numRatings, currentUserRating) {
+      var displayedRating = document.querySelector('.book-rating-details');
+      displayedRating.textContent = 'Рейтинг: ' + averageRating.toFixed(2);
+      document.querySelector('.book-rating-details').dataset.bookRating = averageRating;
+      currentBookRating = averageRating;
+
+      // Обновляем элемент с оценкой пользователя
+      if (userRatingElement) {
+        userRatingElement.textContent = currentUserRating;
+      }
+    }
+    
+    });
+
+
+</script>
+
+{% endblock %}

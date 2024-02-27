@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="title">Хиты продаж</h1>
+
+<div class="row books_row">
+    {% for book in best_sellers.items %}
+    <div class="col-md-3 book__category">
+        <a href="{{ url_for('book_details', google_id=book.google_id) }}" class="book-link">
+            <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}?"
+                 alt="Обложка книги: {{ book.title }}" style="max-width: 204px;">
+            <p class="book__title"><strong>{{ book.title }}</strong></p>
+            <p class="book__text">{{ book.author }}</p>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="pagination">
+    <ul class="pagination-list">
+        {% for page_num in best_sellers.iter_pages() %}
+            {% if page_num %}
+                {% if best_sellers.page - 1 == page_num %}
+                    <li class="pagination-item">
+                        <a href="{{ url_for('best_sellers', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% elif best_sellers.page + 1 == page_num %}
+                    <li class="pagination-item">
+                        <a href="{{ url_for('best_sellers', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% elif best_sellers.page == page_num %}
+                    <li class="pagination-item active">
+                        <span>{{ page_num }}</span>
+                    </li>
+                {% else %}
+                    <li class="pagination-item">
+                        <a href="{{ url_for('best_sellers', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li class="disabled"><span>...</span></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+
+
+

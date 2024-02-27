@@ -1,0 +1,112 @@
+.content {
+  &__button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    &:hover {
+      background-color: #0056b3;
+      color: white;
+      text-decoration: none;
+    }
+  }
+  &__block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    &-list li {
+      margin-bottom: 10px;
+    }
+    &-list book-list {
+      list-style-type: none;
+    }
+    &__right,
+    &__left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 50%;
+    }
+    &__img {
+      width: 65%;
+    }
+    &-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    &-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      font-size: 16px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.carousel {
+  width: 100%;
+  height: 500px;
+  margin: 0 auto;
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap; /* Запрещаем перенос элементов */
+  justify-content: space-between;
+  overflow: hidden;
+  margin-bottom: 30px;
+  &-inner * {
+    box-sizing: content-box;
+  }
+  &-control-prev,
+  &-control-next {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+  }
+  &-control-prev {
+    margin-right: 5px;
+    left: 0; /* Кнопка "назад" будет в левом углу */
+    &.active {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  }
+  &-control-next {
+    margin-left: -5px;
+    right: 0; /* Кнопка "вперед" будет в правом углу */
+    &.active {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  }
+}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .center {
+    padding-left: calc(50% - 384px);
+    padding-right: calc(50% - 384px);
+  }
+  .content__block__img {
+    width: 85%;
+  }
+  .row {
+    flex-wrap: nowrap;
+  }
+  
+  .carousel {
+    height: 350px;
+  }
+}

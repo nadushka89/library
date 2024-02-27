@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    {% if message %}
+    <div class="alert alert-info">
+        {{ message }}
+    </div>
+    {% endif %}
+    <h2 class="title">Добавить книгу в список</h2>
+    <form action="{{ url_for('submit_book_to_list') }}" method="POST" class="add-to-list-form">
+        <div class="form-group">
+            <label for="booklist">Выберите список:</label>
+            <select name="booklist" id="booklist" required class="form-control form-control__list">
+                {% for list in lists %}
+                    <option value="{{ list.id }}"> {{ list.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <input type="hidden" name="book_id" value="{{ book.id }}">
+        {% if book.isbn %}
+            <input type="hidden" name="book_identifier" value="{{ book.isbn }}">
+        {% elif book.google_id %}
+            <input type="hidden" name="book_identifier" value="{{ book.google_id }}">
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Добавить в список</button>
+    </form>
+    <p class="or-create-new">Или создайте новый список:</p>
+    <form action="{{ url_for('create_list') }}" method="POST" class="create-list-form">
+        <div class="form-group">
+            <label for="list_name">Название списка:</label>
+            <input type="text" name="list_name" id="list_name" required class="form-control form-control__list">
+        </div>
+        <input type="hidden" name="book_id" value="{{ book.id }}">
+        {% if book.isbn %}
+            <input type="hidden" name="book_identifier" value="{{ book.isbn }}">
+        {% elif book.google_id %}
+            <input type="hidden" name="book_identifier" value="{{ book.google_id }}">
+        {% endif %}
+        <button type="submit" class="btn btn-success" name="create_and_add">Создать и добавить</button>
+    </form>
+</div>
+{% endblock %}
+
+
+

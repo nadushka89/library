@@ -1,0 +1,44 @@
+.book {
+  border: 1px solid #e0e0e0;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  & a {
+    text-decoration: none;
+    color: #333;
+  }
+  &-list {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+  }
+  &__title {
+    padding-top: 10px;
+  }
+  &-info {
+    flex-grow: 1;
+  }
+  &-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+  }
+  &-description {
+    color: #777;
+    font-size: 0.9em;
+    margin-top: 10px;
+  }
+  &__text {
+    font-size: 14px;
+  }
+}
+
+.content__block-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile__cont">
+    <div class="profile-container center">
+        <!-- Вкладки -->
+        <div class="profile_tabs">
+            <button class="profile_tab-button active" onclick="showTab('about')">Профиль</button>
+            <button class="profile_tab-button" onclick="showTab('booklists')">Списки книг</button>
+        </div>
+
+        <!-- Содержимое вкладок -->
+        <div id="about" class="profile_tab-content active">
+            <h3 class="profile_tab-title">О пользователе</h3>
+            <div class="profile_tab-content active">
+                <h3 class="profile_tab-title">О пользователе</h3>
+                <!-- Форма настроек пользователя -->
+                <form action="{{ url_for ('update_profile') }}" method="POST" enctype="multipart/form-data"> <!-- Обратите внимание на enctype -->
+                    <div class="profile_form-group">
+                        <label for="name" class="profile_tab-item">Имя:</label>
+                        <input type="text" id="name" name="name" value="{{ current_user.name }}" class="profile_input">
+                    </div>
+                    <div class="profile_form-group">
+                        <label for="email" class="profile_tab-item">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ current_user.email }}" class="profile_input">
+                    </div>
+                    <div class="profile_form-group">
+                        <label for="username" class="profile_tab-item">Логин:</label>
+                        <input type="text" id="username" name="username" value="{{ current_user.username }}"
+                               class="profile_input">
+                    </div>
+                    <div class="profile_form-group">
+                        <label for="about_me" class="profile_tab-item">О себе:</label>
+                        <textarea id="about_me" name="about_me" class="profile_input">{{ current_user.about_me }}</textarea>
+                    </div>
+                    <!-- Поле для загрузки аватарки -->
+                    <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
+                        <input type="file" name="avatar">
+                        <button type="submit">Загрузить аватар</button>
+                    </form>
+                    <button type="submit" class="profile_button">Сохранить изменения</button>
+                </form>
+            </div>
+
+        <div id="booklists" class="profile_tab-content">
+            <h2 class="book__title">Списки книг</h2>
+            <div class="book-lists-display">
+                {% for list in all_lists %}
+                <div>
+                    <div class="list-display-item">
+                        <a href="{{ url_for('my_books', list_id=list.id) }}" class="profile_list">
+                            <img src="{{ first_book.cover_image if first_book and first_book.cover_image else url_for('static', filename='image/no_cover.jpg') }}"
+                                 alt="Обложка книги из списка {{ list.name }}">
+                            <h4>{{ list.name }} ({{ list.books.all()|length }})</h4>
+                        </a>
+
+                        <span class="edit-list" onclick="editList('{{ list.id }}{{ list.name }}')">🖋</span>
+                        <form method="post" action="/delete_list/{{ list.id }}"
+                              onsubmit="return openConfirmationModal(event)">
+                            <button type="submit">❌</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button onclick="createNewList(event)" class="profile_button">Создать новый список</button>
+        </div>
+
+        <!-- Модальное окно для создания нового списка -->
+        <div id="createListModal" class="modal">
+            <div class="modal-content">
+                <h2 class="profile_tab-title">Создать список</h2>
+                <form id="createListForm" action="/update_list" method="post">
+                    <label for="list_name" class="profile_tab-item">Название:</label>
+                    <input type="text" id="list_name" name="list_name" class="profile_input">
+                    <button type="submit" class="profile_button">Создать</button>
+                </form>
+
+            </div>
+            <span class="close-btn">&times;</span>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования списка -->
+    <div id="editListModal" class="modal">
+        <div class="modal-content">
+            <h2 class="profile_tab-title">Редактировать список</h2>
+            <form id="editListForm">
+                <label for="editListName" class="profile_tab-item">Название списка:</label>
+                <input type="text" id="editListName" name="editListName" class="profile_input">
+                <button type="submit" class="profile_button">Сохранить изменения</button>
+            </form>
+        </div>
+        <span class="close-btn">&times;</span>
+    </div>
+    <!-- Модальное окно для удаления списка -->
+    <div id="confirmDeleteModal" class="modal">
+        <div class="modal-content">
+            <p>Вы уверены, что хотите удалить этот список?</p>
+            <button id="confirmDeleteButton" class="profile_button">Подтвердить</button>
+            <button id="cancelDeleteButton" class="profile_button">Отмена</button>
+        </div>
+    </div>
+    <!-- Модальное окно для создания списка -->
+    <div id="updateListModal" class="modal">
+        <div class="modal-content">
+            <p>Введите название нового списка:</p>
+            <input id="newListName" type="text">
+            <button id="confirmCreateButton" class="profile_button">Создать</button>
+            <button id="cancelCreateButton" class="profile_button">Отмена</button>
+        </div>
+    </div>
+</div>
+
+
+<!--  для управления вкладками -->
+<script src="/static/js/showTab.js"></script>
+<!--  для управления списками -->
+<script src="/static/js/my_lists.js"></script>
+
+{% endblock %}
