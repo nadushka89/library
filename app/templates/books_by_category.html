@@ -22,7 +22,7 @@
         </nav>
     </div>
     <div class="books-list">
-        <div class="row">
+        <div class="row books_row">
             {% for book in books %}
             <div class="col-md-3 book__category">
                 <a href="{{ url_for('book_details', google_id=book.google_id) }}" class="book-link">
