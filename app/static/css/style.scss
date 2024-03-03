@@ -7,6 +7,7 @@
 @import '_mybooks';
 @import '_profile';
 @import '_search';
+@import '_book_details';
 // @charset "UTF-8";
 
 .col-md-2 {
@@ -94,12 +95,13 @@
 .list-display-item {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 15px;
   margin: 15px;
   align-items: center;
+
   & img {
-    width: 90px;
-    height: 90px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
   }
 }
@@ -203,7 +205,6 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
 }
 
 .details {
@@ -341,7 +342,18 @@ label {
 .form-control__list {
   width: 50%;
 }
-
+.heart-button {
+  max-width: 40px;
+  height: 40px;
+  fill: #0056b3;
+}
+.liked {
+  background-color: #d82c2c;
+}
+.like-button {
+  border: none;
+  background-color: #fff;
+}
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   .center {
     padding-left: calc(50% - 384px);
@@ -354,16 +366,86 @@ label {
   .books_row {
     flex-wrap: wrap;
   }
+  .profile_input {
+    max-width: 50%;
+  }
+  .container__block {
+    margin: 0;
+  }
+  .card-title,
+  .card-text {
+    font-size: 0.95rem;
+  }
 }
-.heart-button {
-  max-width: 40px;
-  height: 40px;
-  fill: #0056b3;
-}
-.liked{
-  background-color: #d82c2c;
-}
-.like-button{
-  border: none;
-  background-color: #fff;
+
+@media screen and (min-width: 375px) and (max-width: 767px) {
+  .center {
+    padding-left: calc(50% - 187.5px);
+    padding-right: calc(50% - 187.5px);
+  }
+  .col-md-2 {
+    padding: 7px;
+  }
+  .col-md-3 {
+    flex: 0 0 20%;
+    width: 25%;
+    padding: 10px;
+  }
+  .col-md-2 img,
+  .col-md-3 img {
+    height: 94px;
+  }
+  .books_row {
+    flex-wrap: wrap;
+  }
+  .header_right {
+    gap: 10px;
+  }
+  .content__block-title {
+    font-size: 16px;
+  }
+  .content__block-text {
+    font-size: 14px;
+  }
+
+  .content__block-list {
+    display: none;
+    &.mobile {
+      display: inline;
+      font-size: 12px;
+    }
+  }
+  .content__block__img {
+    width: 100%;
+  }
+  .book-section .sect {
+    font-size: 12px;
+  }
+  .row {
+    flex-wrap: nowrap;
+  }
+  .book__text {
+    font-size: 10px;
+    padding-top: 5px;
+  }
+  .book__title {
+    font-size: 8px;
+    padding-top: 5px;
+  }
+  .carousel-control-prev,
+  .carousel-control-next {
+    top: 15%;
+  }
+  .carousel {
+    max-height: 200px;
+  }
+  .row {
+    flex-wrap: nowrap;
+  }
+  .login_form {
+    width: 75%;
+  }
+  .login_header {
+    font-size: 15px;
+  }
 }

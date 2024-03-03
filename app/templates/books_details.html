@@ -77,15 +77,20 @@
           <h4>Комментарии:</h4>
           {% for comment in comments %}
           <div class="comment">
-            <strong>{{ comment.user.username }}</strong>
-            <p class="text">{{ comment.content }}</p>
-            <span class="timestamp">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+            <div class="comment-avatar">
+              <img src="{{ comment.user.avatar_url }}" alt="Аватар пользователя" class="profile_tab-img mini">
+            </div>
+            <div class="comment-content">
+              <strong>{{ comment.user.username }}</strong>
+              <p class="text">{{ comment.content }}</p>
+              <span class="timestamp">{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+            </div>
           </div>
           {% endfor %}
         </div>
 
         <div class="ratings-section" id="ratingsSection">
-          <h4>Рейтинги:</h4>
+          <h4>Рейтинг:</h4>
           {% for rating in ratings %}
           <div class="rating"><strong>{{ rating.user.username }}</strong>: {{ rating.rate }}/5</div>
           {% endfor %}

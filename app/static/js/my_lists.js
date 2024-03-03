@@ -40,22 +40,36 @@ function openConfirmationModal(event) {
     }
 }
 
-// Функция для редактирования списка
+// Функция для открытия модального окна редактирования списка
 function editList(listId, listName) {
-    const newName = prompt("Изменить название списка", listName);
-    if (newName) {
+    const modal = document.getElementById('editListModal');
+    const inputField = modal.querySelector('#editListName');
+    inputField.value = listName; // Заполните поле текущим названием списка
+
+    modal.style.display = 'block';
+
+    // Обработчик отправки формы редактирования списка
+    modal.querySelector('#editListForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newName = inputField.value;
         const formData = new FormData();
         formData.append('new_name', newName);
-
+    
         fetch("/edit_list/" + listId, {
             method: 'POST',
             body: formData
         }).then(response => {
             if (response.ok) {
-                location.reload();
+                location.reload(); // Перезагрузить страницу после успешного редактирования
             }
         }).catch(error => {
             console.error('Ошибка:', error);
         });
-    }
+    });
+
+    // Обработчик клика на кнопку "Сохранить изменения"
+    modal.querySelector('#saveEditListButton').addEventListener('click', function(event) {
+        modal.querySelector('#editListForm').submit();
+    });
 }
+

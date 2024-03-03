@@ -18,8 +18,9 @@ class User(db.Model):
     name = db.Column(db.String(64))
     password_hash = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(64), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     about_me = db.Column(db.String(250))
-    avatar_path = db.Column(db.String(255)) 
+    avatar_url = db.Column(db.String(255)) 
     book_lists = db.relationship('BookList', backref='user', lazy='dynamic')
     comments = db.relationship('Comment', back_populates='user', lazy='dynamic')  
     ratings = db.relationship('Rating', back_populates='user', lazy='dynamic')
@@ -27,7 +28,10 @@ class User(db.Model):
     # favorites_list = db.relationship('BookList', backref='user_favorites', uselist=False)
     # read_later_list = db.relationship('BookList', backref='user_read_later', uselist=False)
     def set_password(self, password):
+        if len(password) < 7:
+            return False
         self.password_hash = generate_password_hash(password)
+        return True
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)

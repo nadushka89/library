@@ -3,7 +3,7 @@ import random
 from datetime import datetime, timedelta
 from app.genres_data_ru import genres_data
 from werkzeug.utils import secure_filename
-
+from werkzeug.security import check_password_hash
 from dateutil import parser
 import requests
 from flask import render_template, request, redirect, session, url_for, jsonify
@@ -13,7 +13,7 @@ from app import app, db
 from app.models import Book, User, BookList, Comment, Rating, Genre
 from app.config import api_key
 
-app.config['UPLOAD_FOLDER'] = 'static/image/avatar/'
+app.config['UPLOAD_FOLDER'] = './app/static/image/avatar/'
 
 
 @app.route('/')
@@ -390,14 +390,22 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
+
+        # Проверка наличия всех необходимых данных
         if not username or not password or not email:
-            # Отобразите сообщение об ошибке
-            return "Username,Password, email cannot be empty", 400
+            return "Username, Password, and email cannot be empty", 400
+
+        # Проверка длины пароля
+        if len(password) < 7:
+            return "Password must be at least 7 characters long", 400
+
+        # Создание нового пользователя и сохранение его в базе данных
         user = User(username=username, email=email)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('login'))
+
     return render_template('register.html', genres_data=genres_data)
 
 
@@ -465,6 +473,11 @@ def profile():
 
     return render_template('profile.html', all_lists=all_lists, genres_data=genres_data)
 
+def create_upload_folder():
+    upload_folder = app.config['UPLOAD_FOLDER']
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+create_upload_folder()
 
 @app.route('/update_profile', methods=['POST'])
 @login_required
@@ -475,13 +488,8 @@ def update_profile():
     username = request.form['username']
     about_me = request.form['about_me']
     
-    # Получение файла из запроса
+    # Получение файла изображения из запроса
     avatar = request.files['avatar']
-
-    # Сохранение файла на сервере
-    if avatar:
-        filename = secure_filename(avatar.filename)
-        avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))  # UPLOAD_FOLDER - папка для сохранения файлов
 
     # Обновление данных пользователя в базе данных
     user = User.query.filter_by(id=current_user.id).first()
@@ -489,12 +497,50 @@ def update_profile():
     user.email = email
     user.username = username
     user.about_me = about_me
-    user.avatar = filename  # Сохраняем имя файла в базе данных
+    
+    if avatar:
+        # Сохраняем файл на сервере и получаем ссылку
+        filename = secure_filename(avatar.filename)
+        avatar.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        avatar_url = url_for('static', filename='image/avatar/' + filename)
+        user.avatar_url = avatar_url   # Сохраняем ссылку на изображение в базе данных
+    else:
+        # Если пользователь не загрузил аватарку, установим изображение по умолчанию
+        default_avatar_filename = 'kit.jpg'
+        user.avatar_url = url_for('static', filename=f'image/avatar/{default_avatar_filename}')
 
     db.session.commit()  # Сохраняем изменения
 
     return redirect(url_for('profile'))
 
+@app.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    if request.method == 'POST':
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        confirm_new_password = request.form['confirm_new_password']
+
+        # Получаем пользователя из базы данных
+        user = User.query.filter_by(id=current_user.id).first()
+
+        # Проверяем совпадение старого пароля
+        if not check_password_hash(user.password_hash, old_password):
+            return "Старый пароль неверен"
+        if len(new_password) < 7:
+            return "Новый пароль должен содержать не менее 7 символов"
+
+        # Проверяем совпадение нового и подтвержденного нового паролей
+        if new_password != confirm_new_password:
+            return "Новый пароль и подтверждение не совпадают"
+
+        # Обновляем пароль пользователя
+        user.password = new_password
+        db.session.commit()
+
+        return redirect(url_for('profile'))
+
+    return render_template('change_password.html')
 
 @app.route('/delete_list/<int:list_id>', methods=['POST'])
 @login_required

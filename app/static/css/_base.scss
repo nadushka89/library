@@ -53,7 +53,7 @@ a:hover {
   align-items: center;
   &-form {
     display: flex;
-    width: 100%;
+    width: 90%;
     margin: auto;
     justify-content: center;
     align-items: center;
@@ -124,13 +124,14 @@ a:hover {
   &-trigger {
     position: relative;
     cursor: pointer;
-    margin-right: 0px;
+    // margin-right: 5px;
   }
 
   &_left {
     width: 30%;
     display: flex;
     gap: 10px;
+    align-items: center;
   }
   &_right {
     width: 65%;
@@ -239,18 +240,20 @@ a:hover {
   position: relative;
 }
 
-.best_seller {
-  padding-top: 18px;
-}
+// .best_seller {
+//   padding-top: 18px;
+// }
 
 .content {
-  margin: auto;
+  // margin: auto;
   align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-direction: column;
+  // flex-wrap: wrap;
+  align-content: space-around;
   &_block {
-    min-height: 720px;
+    min-height: 1045px;
+    margin: 0 5px;
   }
 }
 
@@ -260,6 +263,10 @@ a:hover {
   margin-top: 40px;
   &__block {
     margin-left: 20px;
+  }
+  &_content{
+    display: flex;
+    justify-content: center;
   }
 }
 
@@ -277,4 +284,34 @@ a:hover {
   .dropdown_right {
     width: 55%;
   }
+}
+@media screen and (min-width: 375px) and (max-width: 767px) {
+  .genre-label {
+    font-size: 10px;
+    line-height: 16px;
+  }
+  .header {
+    font-size: 10px;
+    gap: 10px;
+    justify-content: space-around;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .header_center {
+    gap: 10px;
+  }
+  .dropdown {
+    font-size: 10px;
+
+  }
+  .user-menu .dropdown-menu{
+    font-size: 10px;
+  }
+  .dropdown-menu li a{
+    font-size: 10px;
+  }
+  .profile_tab-title{
+    font-size: 12px;
+  }
+  
 }

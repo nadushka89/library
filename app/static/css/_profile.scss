@@ -9,6 +9,8 @@
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    max-width: 200px;
+    margin-top: 20px;
   }
   &_list {
     display: flex;
@@ -24,7 +26,7 @@
     outline: none;
   }
   &__cont {
-    width: 100%;
+    // width: 70%;
     padding: 20px;
     background-color: #f4f4f4;
   }
@@ -37,6 +39,7 @@
     width: 100%;
     margin: auto;
     display: flex;
+    min-height: 500px;
   }
   &_tabs {
     width: 35%;
@@ -44,6 +47,16 @@
     border-right: 1px solid #ccc;
   }
   &_tab {
+    &-img{
+      max-width: 200px;
+      border-radius: 100px;
+      height: 200px;
+      &.mini{
+        max-width: 100px;
+        border-radius: 100px;
+        height: 100px;
+      }
+    }
     &-button {
       display: block;
       background: none;
@@ -65,12 +78,15 @@
       display: none;
       /* По умолчанию все содержимое вкладки скрыто */
       &.active {
-        display: block;
-        /* активный контент вкладки отображается */
+        display: flex;
+
+      }
+      &_left{
+        width: 77%;
       }
     }
     &-item {
-      width: 80px;
+      width: 135px;
     }
     &-title {
       padding-bottom: 15px;
@@ -92,6 +108,12 @@
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 30%;
+    max-width: 30%;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .modal-content {
+    max-width: 60%;
   }
 }
