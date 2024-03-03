@@ -1,19 +1,20 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<div class="login_form center">
-    <h2 class="login_header">Войти</h2>
+{% extends 'base.html' %} {% block content %}
+<div class="login">
+<div class="login_form">
+  <h2 class="login_header center">Войти</h2>
+  
     <form action="/login" method="post">
-        <div class="login-group">
-            <label for="username" class="login-group-item">Логин:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div class="login-group">
-            <label for="password" class="login-group-item">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <button type="submit" class="login-group-button">Войти</button>
+      <div class="login-group">
+        <label for="username" class="login-group-item">Логин:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div class="login-group">
+        <label for="password" class="login-group-item">Пароль:</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <button type="submit" class="login-group-button">Войти</button>
     </form>
     <p>Еще нет аккаунта? <a href="/register">Регистрация</a></p>
+  </div>
 </div>
 {% endblock %}

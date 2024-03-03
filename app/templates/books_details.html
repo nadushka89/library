@@ -16,7 +16,7 @@
 </div>
     <div class="details">
       <div class="cover">
-        <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}" alt="Обложка книги: {{ book.title }}" style="max-width: 300px; height: 375px" />
+        <img src="{{ book.cover_image or url_for('static', filename='image/no_cover.jpg') }}" alt="Обложка книги: {{ book.title }}"  class="cover_image"/>
       </div>
       <div>
         <h2 class="title title__left">{{ book.title }}</h2>
@@ -74,7 +74,7 @@
       </form>
       <form id="ratingForm" data-url="{{ url_for('rate_book', google_id=book.google_id) }}" method="post">
         <div class="comments-section">
-          <h4>Комментарии:</h4>
+          <h4 class="title">Комментарии:</h4>
           {% for comment in comments %}
           <div class="comment">
             <div class="comment-avatar">
@@ -90,7 +90,7 @@
         </div>
 
         <div class="ratings-section" id="ratingsSection">
-          <h4>Рейтинг:</h4>
+          <h4 class="title">Рейтинг:</h4>
           {% for rating in ratings %}
           <div class="rating"><strong>{{ rating.user.username }}</strong>: {{ rating.rate }}/5</div>
           {% endfor %}

@@ -51,7 +51,7 @@
           <div class="list-display-item">
             <a href="{{ url_for('my_books', list_id=list.id) }}" class="profile_list">
               <img src="{{ first_book.cover_image if first_book and first_book.cover_image else url_for('static', filename='image/no_cover.jpg') }}" alt="Обложка книги из списка {{ list.name }}" />
-              <h5>{{ list.name }} ({{ list.books.all()|length }})</h4>
+              <h5 class="book__title">{{ list.name }} ({{ list.books.all()|length }})</h4>
             </a>
 
             <span class="edit-list" onclick="editList('{{ list.id }}', '{{ list.name }}')">🖋</span>
